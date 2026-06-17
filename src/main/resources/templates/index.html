@@ -13,15 +13,28 @@
   <h3>マイタスク</h3>
   <table class="table table-borderless">
     <thead>
+		<tr>
+			<th style="width: 3rem;">完了済み</th>
+			<th style="width: 18rem;">タスク名</th>
+			<th style="width: 6rem;">優先度</th>
+			<th style="width: 8rem;">カテゴリ</th>
+			<th  style="width: 6rem;">作業予定日</th>
+		</tr>
     </thead>
     <tbody id="todes">
       <tr class="todo" th:each="todo : ${todos}">
+		
         <td style="width:2rem">
           <input type="checkbox"name="done_flg"/>
           <input type="hidden" name="id" th:value="${todo.id}" />
         </td>
-        <td  style="width:22rem"><input type="text" style="border:none;width:22rem" name="title" th:value="${todo.title}"/></td>
-        <td><input type="date" style="border:none" name="time_limit" th:value="${todo.time_limit}" /></td>
+        <td th:text="${todo.title}"></td>
+		<td th:text="${todo.priority_name}"></td>
+		<td th:text="${todo.category_name}"></td>
+        <td th:text="${todo.work_plan_day}"></td>
+		<td>
+			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>
+		</td>
       </tr>
     </tbody>
   </table>
@@ -41,14 +54,13 @@
           <input type="hidden" name="id" th:value="${todo.id}" />
         </td>
         <td  style="width:22rem"><input type="text" style="border:none;width:22rem;text-decoration:line-through" name="title" th:value="${todo.title}"/></td>
-        <td><input type="date"style="border:none;display:none" name="time_limit" th:value="${todo.time_limit}" /></td>
+        <td><input type="date"style="border:none;display:none" name="work_plan_day" th:value="${todo.work_plan_day}" /></td>
       </tr>
     </tbody>
   </table>
 
 
-   <button type="button" class="btn btn-light rounded-circle p-0 text-muted font-weight-bold" data-toggle="modal"data-target="#modal"
-    style="width:2.5rem;height:2.5rem;">＋</button>
+   <button type="button" class="btn btn-outline-secondary" data-toggle="modal"data-target="#modal">追加</button>
    <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
        <div class="modal-dialog">
            <div class="modal-content">
@@ -58,7 +70,7 @@
                            <input type="text" name="title" class="form-control"placeholder="新しいタスク"/>
                        </div>
                        <div class="form-group">
-                           <input type="date" name="time_limit"class="form-control" style="width:60%;" />
+                           <input type="date" name="work_plan_day"class="form-control" style="width:60%;" />
                        </div>
                        <button type="button" class="btn btn-primary float-right"  data-dismiss="modal" id="add">追加</button>
                    </form>

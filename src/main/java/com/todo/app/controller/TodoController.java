@@ -36,8 +36,6 @@ public class TodoController {
 		List<Todo> list = todoMapper.selectIncomplete();
 		List<Todo> doneList = todoMapper.selectComplete();
 		
-		String a = sub();
-		
 		if (false) {
 			logger.debug("list:" + list.size() + "件");
 			logger.debug("doneList:" + doneList.size() + "件");
@@ -49,9 +47,16 @@ public class TodoController {
 		return "index";
 	}
 	
-	private String sub() {
-		return "sub";
-	}
+	@RequestMapping(value="/detail")
+    public String detail(Integer id, Model model) {
+        logger.info("アクセス: /detail");
+        
+        Todo todo = todoMapper.selectById(id);
+        model.addAttribute("todo", todo);
+        
+        return "detail";
+    }
+
 
 	@RequestMapping(value="/add")
 	@ResponseBody
@@ -84,7 +89,7 @@ public class TodoController {
 	@RequestMapping(value="/delete")
 	@ResponseBody
 	public void delete() {
-		logger.info("アクセス: /update");
+		logger.info("アクセス: /delete");
 		
 		todoMapper.delete();
 	}

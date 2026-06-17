@@ -12,19 +12,19 @@ $('.todo input').change(function(){
 	const todo = $(this).parents('.todo');
 	const id = todo.find('input[name="id"]');
 	const title = todo.find('input[name="title"]');
-	const timeLimit = todo.find('input[name="time_limit"]');
+	const timeLimit = todo.find('input[name="work_plan_day"]');
 	const isDone = todo.find('input[name="done_flg"]').prop("checked");
 	let doneFlg;
 	if(isDone == true) {
-	  doneFlg = 1;
+	  doneFlg = true;
 	}else{
-	  doneFlg = 0;
+	  doneFlg = false;
 	}
 
 	const params = {
 		id : id.val(),
 		title : title.val(),
-		time_limit : timeLimit.val(),
+		work_plan_day : timeLimit.val(),
 		done_flg : doneFlg
 	}
 	$.post("/update",params);
@@ -36,12 +36,12 @@ $('.todo input').change(function(){
 	  if(isDone == true){
 	    $(todo).appendTo('#donetodes');
 	    todo.find('input[name="title"]').css('text-decoration','line-through')
-	    todo.find('input[name="time_limit"]').hide();
+	    todo.find('input[name="work_plan_day"]').hide();
 	    doneCount ++;
 	  }else{
 	    $(todo).appendTo('#todes');
 	    todo.find('input[name="title"]').css('text-decoration','none')
-	    todo.find('input[name="time_limit"]').show()
+	    todo.find('input[name="work_plan_day"]').show()
 	    doneCount --;
 	  }
 
@@ -70,7 +70,7 @@ $('#add').click(function() {
         const clone = $('#todes tr:first').clone(true);
         clone.find('input[name="id"]').val(json.id);
         clone.find('input[name="title"]').val(json.title);
-        clone.find('input[name="time_limit"]').val(json.time_limit);
+        clone.find('input[name="work_plan_day"]').val(json.work_plan_day);
         $('#todes').append(clone[0]);
     })
 })
@@ -82,6 +82,15 @@ $('#delete').click(function(){
         $('#done_count').text(0);
     })
 })
+
+//詳細画面へ
+
+$(function() {
+    $(".detail-btn").on("click", function() {
+        const id = $(this).data("id");
+        location.href = "/detail?id=" + id;
+    });
+});
 
 
 })

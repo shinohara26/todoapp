@@ -12,6 +12,13 @@ public class Todo {
 
 	private long id;
 	private String title;
-	private int done_flg;
-	private String time_limit;
+	private boolean done_flg;
+	private String work_plan_day;
+	private long priority;
+	private long category;
+	private long parent_id;
+	private String memo;
+	
+	private String priority_name;
+	private String category_name;
 }

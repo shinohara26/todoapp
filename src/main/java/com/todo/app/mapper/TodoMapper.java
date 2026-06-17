@@ -3,6 +3,7 @@ package com.todo.app.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.todo.app.entity.Todo;
 
@@ -14,6 +15,8 @@ public interface TodoMapper {
 	public List<Todo> selectIncomplete();
 
 	public List<Todo> selectComplete();
+	
+	Todo selectById(@Param("id") Integer id);
 
 	public void add(Todo todo);
 
