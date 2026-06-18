@@ -1,87 +1,142 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-<meta charset="UTF-8">
-<script src="webjars/jquery/3.5.1/jquery.min.js"></script>
-<link rel="stylesheet" href="webjars/bootstrap/4.6.0/css/bootstrap.min.css" />
-<script src="webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
-<link rel="stylesheet" th:href="@{/css/style.css}" />
-<title>TodoApp</title>
+	<meta charset="UTF-8">
+	<script src="webjars/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="webjars/bootstrap/4.6.0/css/bootstrap.min.css" />
+	<script src="webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+	<title>TodoApp</title>
 </head>
+
 <body>
-  <h1>TodoList</h1>
-  <h3>マイタスク</h3>
-  <table class="table table-borderless">
-    <thead>
-		<tr>
-			<th style="width: 10rem;">完了済み</th>
-			<th style="width: 18rem;">タスク名</th>
-			<th style="width: 8rem;">優先度</th>
-			<th style="width: 8rem;">カテゴリ</th>
-			<th  style="width: 10rem;">作業予定日</th>
-		</tr>
-    </thead>
-    <tbody id="todes">
-      <tr class="todo" th:each="todo : ${todos}">
-		
-        <td style="width:2rem">
-          <input type="checkbox"name="done_flg"/>
-          <input type="hidden" name="id" th:value="${todo.id}" />
-        </td>
-        <td th:text="${todo.title}"></td>
-		<td th:text="${todo.priority_name}"></td>
-		<td th:text="${todo.category_name}"></td>
-        <td th:text="${todo.work_plan_day}"></td>
-		<td>
-<!--			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>-->
-			<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
-		</td>
-      </tr>
-    </tbody>
-  </table>
+	<h1>TodoList</h1>
+	<h3>マイタスク</h3>
+	<table class="table table-borderless">
+		<thead>
+			<tr>
+				<th style="width: 10rem;">完了済み</th>
+				<th style="width: 18rem;">タスク名</th>
+				<th style="width: 8rem;">優先度</th>
+				<th style="width: 8rem;">カテゴリ</th>
+				<th style="width: 10rem;">作業予定日</th>
+			</tr>
+		</thead>
+		<tbody id="todes">
 
-  <div style="font-size:20px">
-    <span id="done_count"></span>
-    <span class="pr-3">件完了</span>
-    <span class="button_for_show " style="display:inline-block"></span>
-  </div>
-  <table class="table table-borderless" style="display:none"id="done_table">
-  <thead>
-  </thead>
-    <tbody id="donetodes">
-      <tr class="todo" th:each="todo : ${doneTodos}">
-        <td style="width:2rem">
-          <input type="checkbox"name="done_flg" checked/>
-          <input type="hidden" name="id" th:value="${todo.id}" />
-        </td>
-        <td  style="width:22rem"><input type="text" style="border:none;width:22rem;text-decoration:line-through" name="title" th:value="${todo.title}"/></td>
-        <td><input type="date"style="border:none;display:none" name="work_plan_day" th:value="${todo.work_plan_day}" /></td>
-      </tr>
-    </tbody>
-  </table>
+			<td th:style="${todo.parent_id != null} ? 'padding-left: 24px;' : ''">
+				<span th:text="${todo.parent_id != null ? '└ ' + todo.title : todo.title}"></span>
+			</td>
 
 
-   <button type="button" class="btn btn-outline-secondary" data-toggle="modal"data-target="#modal">追加</button>
-   <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-       <div class="modal-dialog">
-           <div class="modal-content">
-               <div class="modal-body">
-                   <form id="add_form">
-                       <div class="form-group">
-                           <input type="text" name="title" class="form-control"placeholder="新しいタスク"/>
-                       </div>
-                       <div class="form-group">
-                           <input type="date" name="work_plan_day"class="form-control" style="width:60%;" />
-                       </div>
-                       <button type="button" class="btn btn-primary float-right"  data-dismiss="modal" id="add">追加</button>
-                   </form>
-               </div>
-           </div>
-       </div>
-   </div>
+			<td style="width:2rem">
+				<input type="checkbox" name="done_flg" />
+				<input type="hidden" name="id" th:value="${todo.id}" />
+			</td>
+			<td th:text="${todo.title}"></td>
+			<td th:text="${todo.priority_name}"></td>
+			<td th:text="${todo.category_name}"></td>
+			<td th:text="${todo.work_plan_day}"></td>
+			<td>
+				<!--			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>-->
+				<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
+			</td>
+			</tr>
+		</tbody>
+	</table>
 
-  <button type="button" class="btn btn-outline-secondary" id="delete">完了済みを削除</button>
+	<div style="font-size:20px">
+		<span id="done_count"></span>
+		<span class="pr-3">件完了</span>
+		<span class="button_for_show " style="display:inline-block"></span>
+	</div>
+	<table class="table table-borderless" style="display:none" id="done_table">
+		<thead>
+			<th style="width: 10rem;"></th>
+			<th style="width: 18rem;"></th>
+			<th style="width: 8rem;"></th>
+			<th style="width: 8rem;"></th>
+			<th style="width: 10rem;"></th>
+		</thead>
+		<tbody id="donetodes">
+			<tr class="todo" th:each="todo : ${doneTodos}">
+				<td style="width:2rem">
+					<input type="checkbox" name="done_flg" checked />
+					<input type="hidden" name="id" th:value="${todo.id}" />
+				</td>
 
-  <script type="text/javascript" th:src="@{/js/todo.js}"></script>
+				<td th:style="${todo.parent_id != null} ? 'padding-left: 24px;' : ''">
+					<span th:text="${todo.parent_id != null ? '└ ' + todo.title : todo.title}"></span>
+				</td>
+
+				<td th:text="${todo.priority_name}"></td>
+				<td th:text="${todo.category_name}"></td>
+				<td th:text="${todo.work_plan_day}"></td>
+				<td>
+					<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+
+	<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#modal">追加</button>
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					<form id="add_form">
+						<div class="form-group">
+							<th>タスク名</th>
+							<input type="text" name="title" class="form-control" placeholder="タスクを入力してください" />
+						</div>
+						<div class="form-group">
+							<th>優先度</th>
+							<select name="priority" class="form-control">
+								<option value="" th:selected="${todo?.priority == null}" disabled hidden>選択してください
+								</option>
+								<option th:each="priority : ${priorityList}" th:value="${priority.priority_id}"
+									th:text="${priority.priority_name}">
+								</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<th>カテゴリ</th>
+							<select name="category" class="form-control">
+								<option value="" th:selected="${todo?.category == null}" disabled hidden>選択してください
+								</option>
+								<option th:each="category : ${categoryList}" th:value="${category.category_id}"
+									th:text="${category.category_name}">
+								</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<th>作業予定日</th>
+							<input type="date" name="work_plan_day" class="form-control" style="width:60%;" />
+						</div>
+						<div class="form-group">
+							<tr>
+								<th colspan="4">メモ</th>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<textarea name="memo" rows="6" class="form-control"></textarea>
+								</td>
+							</tr>
+						</div>
+						<button type="button" class="btn btn-secondary float-right" data-dismiss="modal"
+							id="cancelAdd">キャンセル</button>
+						<button type="button" class="btn btn-primary float-right" id="add">保存</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<button type="button" class="btn btn-outline-secondary" id="delete">完了済みを削除</button>
+
+	<script type="text/javascript" th:src="@{/js/todo.js}"></script>
 </body>
+
 </html>
