@@ -30,6 +30,7 @@
     select i.*, p.priority_name, c.category_name from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
     	left join category_m_table c on i.category = c.category_id
+    	where i.id = #{id}
     	order by i.id
   </select>  
 
@@ -43,8 +44,8 @@
   <update id="update" parameterType="com.todo.app.entity.Todo">
     update items_table set
       title = #{title},
-      work_plan_day = to_date(#{work_plan_day},'yy-mm-dd'),
-      done_flg = #{done_flg}
+      work_plan_day = to_date(#{work_plan_day},'yyyy-mm-dd'),
+      done_flg = #{done_flg},
       priority = #{priority},
       category = #{category},
       memo = #{memo}

@@ -85,12 +85,21 @@ $('#delete').click(function(){
 
 //詳細画面へ
 
-$(function() {
-    $(".detail-btn").on("click", function() {
-        const id = $(this).data("id");
-        location.href = "/detail?id=" + id;
-    });
+$(".detail-btn").on("click", function() {
+	const id = $(this).data("id");
+    location.href = "/detail?id=" + id;
 });
 
+// 保存ボタン
+$("#saveBtn").on("click", function() {
+	// checkbox の状態を hidden に入れて送信
+    $("#doneFlgValue").val($("#doneFlgCheck").prop("checked"));
+    $("#detailForm").submit();
+});
 
-})
+// 戻るボタン
+$("#backBtn").on("click", function() {
+	location.href = $(this).data("url");
+});
+
+});

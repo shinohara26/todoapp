@@ -10,15 +10,17 @@ import lombok.Setter;
 public class Todo {
 
 
-	private long id;
+	private Long id;
 	private String title;
-	private boolean done_flg;
+	private Boolean done_flg;
 	private String work_plan_day;
-	private long priority;
-	private long category;
-	private long parent_id;
-	private String memo;
 	
+	private Long parent_id;
+	private String memo;
+
+	private Integer priority;
 	private String priority_name;
+	
+	private Integer category;
 	private String category_name;
 }

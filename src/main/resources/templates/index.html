@@ -14,11 +14,11 @@
   <table class="table table-borderless">
     <thead>
 		<tr>
-			<th style="width: 3rem;">完了済み</th>
+			<th style="width: 10rem;">完了済み</th>
 			<th style="width: 18rem;">タスク名</th>
-			<th style="width: 6rem;">優先度</th>
+			<th style="width: 8rem;">優先度</th>
 			<th style="width: 8rem;">カテゴリ</th>
-			<th  style="width: 6rem;">作業予定日</th>
+			<th  style="width: 10rem;">作業予定日</th>
 		</tr>
     </thead>
     <tbody id="todes">
@@ -33,7 +33,8 @@
 		<td th:text="${todo.category_name}"></td>
         <td th:text="${todo.work_plan_day}"></td>
 		<td>
-			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>
+<!--			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>-->
+			<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
 		</td>
       </tr>
     </tbody>
