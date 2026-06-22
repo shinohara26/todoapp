@@ -32,7 +32,15 @@
     	left join category_m_table c on i.category = c.category_id
     	where i.id = #{id}
     	order by i.id
-  </select>  
+  </select>
+	
+  <select id="selectChildList" resultType="com.todo.app.entity.Todo" parameterType="int">
+	select i.*, p.priority_name, c.category_name from items_table i
+    	left join priority_m_table p on i.priority = p.priority_id
+    	left join category_m_table c on i.category = c.category_id
+    	where i.parent_id = #{parent_id}
+    	order by i.id 
+  </select>
 
   <insert id="add"  useGeneratedKeys="true" keyProperty="id" parameterType="com.todo.app.entity.Todo">
     insert into items_table (title, work_plan_day, priority, 

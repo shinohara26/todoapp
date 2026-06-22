@@ -24,24 +24,21 @@
 			</tr>
 		</thead>
 		<tbody id="todes">
+			<tr class="todo" th:each="todo : ${todos}">
 
-			<td th:style="${todo.parent_id != null} ? 'padding-left: 24px;' : ''">
-				<span th:text="${todo.parent_id != null ? '└ ' + todo.title : todo.title}"></span>
-			</td>
+				<td style="width:2rem">
+					<input type="checkbox" name="done_flg" />
+					<input type="hidden" name="id" th:value="${todo.id}" />
 
-
-			<td style="width:2rem">
-				<input type="checkbox" name="done_flg" />
-				<input type="hidden" name="id" th:value="${todo.id}" />
-			</td>
-			<td th:text="${todo.title}"></td>
-			<td th:text="${todo.priority_name}"></td>
-			<td th:text="${todo.category_name}"></td>
-			<td th:text="${todo.work_plan_day}"></td>
-			<td>
-				<!--			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>-->
-				<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
-			</td>
+				</td>
+				<td th:text="${todo.title}"></td>
+				<td th:text="${todo.priority_name}"></td>
+				<td th:text="${todo.category_name}"></td>
+				<td th:text="${todo.work_plan_day}"></td>
+				<td>
+					<!--			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>-->
+					<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
+				</td>
 			</tr>
 		</tbody>
 	</table>
@@ -66,10 +63,7 @@
 					<input type="hidden" name="id" th:value="${todo.id}" />
 				</td>
 
-				<td th:style="${todo.parent_id != null} ? 'padding-left: 24px;' : ''">
-					<span th:text="${todo.parent_id != null ? '└ ' + todo.title : todo.title}"></span>
-				</td>
-
+				<td th:text="${todo.title}"></td>
 				<td th:text="${todo.priority_name}"></td>
 				<td th:text="${todo.category_name}"></td>
 				<td th:text="${todo.work_plan_day}"></td>

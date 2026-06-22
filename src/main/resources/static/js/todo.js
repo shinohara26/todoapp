@@ -8,7 +8,7 @@ $(function() {
     $('#done_count').text(doneCount);
 
     //更新処理
-    $('.todo input').change(function() {
+    $('#todes input').change(function() {
         const todo = $(this).parents('.todo');
         const id = todo.find('input[name="id"]');
         const title = todo.find('input[name="title"]');
@@ -80,12 +80,42 @@ $(function() {
             }
 
         });
+    });
 
-        $('#cancelAdd').click(function() {
-            $('#modal').modal('hide');
-            $('#add_form')[0].reset();
+    $('#cancelAdd').click(function() {
+        $('#modal').modal('hide');
+        $('#add_form')[0].reset();
+    });
+
+
+
+    // 子タスク追加処理
+    $('#childAddSaveBtn').click(function() {
+        const params = $('#child_add_form').serialize();
+
+        $.ajax({
+            url: "/add",
+            type: "POST",
+            data: params,
+            dataType: "json"
+        }).done(function(json) {
+            console.log("child_add response =", json);
+
+            if (json.success && json.id != null) {
+                location.href = "/child/detail?id=" + json.id;
+            }
+
         });
     });
+
+    $('#childAddCancelBtn').click(function() {
+        $('#childAddModal').modal('hide');
+        $('#child_add_form')[0].reset();
+    });
+
+
+
+
 
 
     //削除処理
@@ -98,10 +128,10 @@ $(function() {
 
     //詳細画面へ
 
-    $(".detail-btn").on("click", function() {
-        const id = $(this).data("id");
-        location.href = "/detail?id=" + id;
-    });
+    //    $(".detail-btn").on("click", function() {
+    //        const id = $(this).data("id");
+    //        location.href = "/detail?id=" + id;
+    //    });
 
     // 保存ボタン
     $("#saveBtn").on("click", function() {
@@ -114,5 +144,17 @@ $(function() {
     $("#backBtn").on("click", function() {
         location.href = $(this).data("url");
     });
+
+    // 保存ボタン(子タスク)
+    $("#childSaveBtn").on("click", function() {
+        // checkbox の状態を hidden に入れて送信
+        $("#childDoneFlgValue").val($("#childDoneFlgCheck").prop("checked"));
+        $("#childDetailForm").submit();
+    });
+
+    // 戻るボタン(子タスク)
+	$('#childBackBtn').click(function() {
+	    location.href = $(this).data('url');
+	});
 
 });

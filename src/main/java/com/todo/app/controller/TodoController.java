@@ -75,7 +75,8 @@ public class TodoController {
 
 		todoMapper.add(todo);
 
-		logger.info("追加後 id = " + todo.getId());
+		logger.debug("追加後 id = " + todo.getId());
+		logger.debug("parent_id = " + todo.getParent_id());
 
 		response.put("success", true);
 		response.put("id", todo.getId());
@@ -86,18 +87,22 @@ public class TodoController {
 	@RequestMapping(value = "/update")
 	//	@ResponseBody
 	public String update(Todo todo) {
-		logger.info("アクセス: /update");
-		logger.info("id=" + todo.getId());
-		logger.info("title=" + todo.getTitle());
-		logger.info("done_flg=" + todo.getDone_flg());
-		logger.info("priority=" + todo.getPriority());
-		logger.info("category=" + todo.getCategory());
-		logger.info("work_plan_day=" + todo.getWork_plan_day());
-		logger.info("memo=" + todo.getMemo());
+		logger.debug("アクセス: /update");
+		logger.debug("id=" + todo.getId());
+		logger.debug("title=" + todo.getTitle());
+		logger.debug("done_flg=" + todo.getDone_flg());
+		logger.debug("priority=" + todo.getPriority());
+		logger.debug("category=" + todo.getCategory());
+		logger.debug("work_plan_day=" + todo.getWork_plan_day());
+		logger.debug("memo=" + todo.getMemo());
 
 		todoMapper.update(todo);
-
-		return "redirect:/detail?id=" + todo.getId();
+		
+		if (todo.getParent_id() != null) {
+	        return "redirect:/child/detail?id=" + todo.getId();
+	    }else {
+	    	return "redirect:/detail?id=" + todo.getId();
+	    }
 	}
 
 	@RequestMapping(value = "/delete")
@@ -115,10 +120,12 @@ public class TodoController {
 		Todo todo = todoMapper.selectById(id);
 		List<Priority> priorityList = priorityMapper.selectAll();
 		List<Category> categoryList = categoryMapper.selectAll();
+		List<Todo> childTodos = todoMapper.selectChildList(id);
 
 		model.addAttribute("todo", todo);
 		model.addAttribute("priorityList", priorityList);
 		model.addAttribute("categoryList", categoryList);
+		model.addAttribute("childTodos", childTodos);
 		return "detail";
 	}
 
