@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<script src="webjars/jquery/3.5.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="webjars/bootstrap/4.6.0/css/bootstrap.min.css" />
+	<script src="webjars/bootstrap/4.6.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+	<title>詳細情報</title>
+</head>
+
+<body>
+	<form id="detailForm" th:action="@{/update}" method="post">
+		<input type="hidden" name="done_flg" id="doneFlgValue" th:value="${todo.done_flg}" />
+
+		<h3>
+			<input type="text" name="title" th:value="${todo.title}" class="form-control d-inline-block"
+				style="width: 20rem;" placeholder="タスクを入力してください">詳細
+		</h3>
+
+
+		<div class="d-flex justify-content-end mb-4" style="gap: 8px;">
+			<button type="button" id="childAddBtn" class="btn btn-primary" th:data-parent-id="${todo.id}"
+				data-toggle="modal" data-target="#childAddModal">子タスク追加</button>
+			<button type="button" id="saveBtn" class="btn btn-primary">保存</button>
+			<button type="button" id="backBtn" class="btn btn-secondary" th:data-url="@{/}">戻る</button>
+		</div>
+		<table class="table table-borderless">
+			<thead>
+				<tr>
+					<th style="width: 10rem;">完了済み</th>
+					<th style="width: 8rem;">優先度</th>
+					<th style="width: 8rem;">カテゴリ</th>
+					<th style="width: 10rem;">作業予定日</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td style="width:10rem">
+						<input type="checkbox" id="doneFlgCheck" th:checked="${todo.done_flg}" />
+						<input type="hidden" name="id" th:value="${todo.id}" />
+					</td>
+					<td style="width: 8rem;">
+						<select name="priority" class="form-control">
+							<option value="" th:selected="${todo?.priority == null}" disabled hidden>選択してください
+							</option>
+							<option th:each="priority : ${priorityList}" th:value="${priority.priority_id}"
+								th:text="${priority.priority_name}"
+								th:selected="${todo.priority == priority.priority_id}">
+							</option>
+						</select>
+					</td>
+					<td style="width: 10rem;">
+						<select name="category" class="form-control">
+							<option value="" th:selected="${todo?.category == null}" disabled hidden>選択してください</option>
+							<option th:each="category : ${categoryList}" th:value="${category.category_id}"
+								th:text="${category.category_name}"
+								th:selected="${todo.category == category.category_id}">
+							</option>
+						</select>
+					</td>
+					<td style="width: 10rem;">
+						<input type="date" style="border:none" name="work_plan_day" th:value="${todo.work_plan_day}"
+							class="form-control" />
+					</td>
+				</tr>
+				<tr>
+					<th colspan="4">メモ</th>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<textarea name="memo" rows="6" class="form-control" th:text="${todo.memo}"
+							placeholder="メモを入力してください"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+	</form>
+
+	<h4>子タスク一覧</h4>
+	<table class="table table-borderless">
+		<thead>
+			<th style="width: 10rem;">完了済み</th>
+			<th style="width: 18rem;">タスク名</th>
+			<th style="width: 8rem;">優先度</th>
+			<th style="width: 8rem;">カテゴリ</th>
+			<th style="width: 10rem;">作業予定日</th>
+		</thead>
+		<tbody>
+			<tr th:each="child : ${childTodos}">
+				<td style="width:10rem">
+					<input type="checkbox" th:checked="${todo.done_flg}" />
+					<input type="hidden" name="id" th:value="${child.id}" />
+				</td>
+				<td th:text="${child.title}"></td>
+				<td th:text="${child.priority_name}"></td>
+				<td th:text="${child.category_name}"></td>
+				<td th:text="${child.work_plan_day}"></td>
+				<td>
+					<a th:href="@{/child/detail(id=${child.id})}"
+						class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<div class="modal fade" id="childAddModal" tabindex="-1" role="dialog" aria-labelledby="childAddModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="childAddModalLabel">子タスクの追加</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="child_add_form">
+						<input type="hidden" name="parent_id" th:value="${todo.id}" />
+
+						<div class="form-group">
+							<label class="font-weight-bold">タスク名 <span class="text-danger">*</label>
+							<input type="text" name="title" class="form-control" placeholder="タスクを入力してください" />
+							<div id="childAddTitleError" class="text-danger mt-1" style="display: none;"></div>
+						</div>
+						<div class="form-group">
+							<label class="font-weight-bold">優先度</label>
+							<select name="priority" class="form-control">
+								<option value="" disabled selected hidden>選択してください</option>
+								<option th:each="priority : ${priorityList}" th:value="${priority.priority_id}"
+									th:text="${priority.priority_name}">
+								</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="font-weight-bold">カテゴリ</label>
+							<select name="category" class="form-control">
+								<option value="" disabled selected hidden>選択してください</option>
+								<option th:each="category : ${categoryList}" th:value="${category.category_id}"
+									th:text="${category.category_name}">
+								</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label class="font-weight-bold">作業予定日</label>
+							<input type="date" name="work_plan_day" class="form-control" style="width:60%;" />
+						</div>
+						<div class="form-group">
+							<label class="font-weight-bold">メモ</label>
+							<textarea name="memo" rows="4" class="form-control" placeholder="メモを入力してください"></textarea>
+						</div>
+
+						<div class="text-right">
+							<button type="button" class="btn btn-primary" id="childAddSaveBtn">保存</button>
+							<button type="button" class="btn btn-secondary" data-dismiss="modal"
+								id="childAddCancelBtn">キャンセル</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" th:src="@{/js/todo.js}"></script>
+</body>
+
+</html>

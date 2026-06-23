@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<script th:src="@{/webjars/jquery/3.5.1/jquery.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0/css/bootstrap.min.css}" />
+	<script th:src="@{/webjars/bootstrap/4.6.0/js/bootstrap.min.js}"></script>
+	<link rel="stylesheet" th:href="@{/css/style.css}" />
+	<title>詳細情報</title>
+</head>
+
+<body>
+	<form id="childDetailForm" th:action="@{/update}" method="post">
+		<input type="hidden" name="parent_id" th:value="${todo.parent_id}" />
+		<input type="hidden" name="done_flg" id="childDoneFlgValue" th:value="${todo.done_flg}" />
+
+		<h3>
+			<input type="text" name="title" th:value="${todo.title}" class="form-control d-inline-block"
+				style="width: 20rem;" placeholder="タスクを入力してください">詳細
+		</h3>
+
+		<div class="d-flex justify-content-end mb-4" style="gap: 8px;">
+			<button type="button" id="childSaveBtn" class="btn btn-primary">保存</button>
+			<button type="button" id="childBackBtn" class="btn btn-secondary" th:data-url="@{/detail(id=${todo.parent_id})}">戻る</button>
+		</div>
+		<table class="table table-borderless">
+			<thead>
+				<tr>
+					<th style="width: 10rem;">完了済み</th>
+					<th style="width: 8rem;">優先度</th>
+					<th style="width: 8rem;">カテゴリ</th>
+					<th style="width: 10rem;">作業予定日</th>
+				</tr>
+			</thead>
+
+			<tbody>
+				<tr>
+					<td style="width:10rem">
+						<input type="checkbox" id="childDoneFlgCheck" th:checked="${todo.done_flg}" />
+						<input type="hidden" name="id" th:value="${todo.id}" />
+					</td>
+					<td style="width: 8rem;">
+						<select name="priority" class="form-control">
+							<option value="" th:selected="${todo?.priority == null}" disabled hidden>選択してください
+							</option>
+							<option th:each="priority : ${priorityList}" th:value="${priority.priority_id}"
+								th:text="${priority.priority_name}"
+								th:selected="${todo.priority == priority.priority_id}">
+							</option>
+						</select>
+					</td>
+					<td style="width: 10rem;">
+						<select name="category" class="form-control">
+							<option value="" th:selected="${todo?.category == null}" disabled hidden>選択してください
+							</option>
+							<option th:each="category : ${categoryList}" th:value="${category.category_id}"
+								th:text="${category.category_name}"
+								th:selected="${todo.category == category.category_id}">
+							</option>
+						</select>
+					</td>
+					<td style="width: 10rem;">
+						<input type="date" style="border:none" name="work_plan_day" th:value="${todo.work_plan_day}"
+							class="form-control" />
+					</td>
+				</tr>
+				<tr>
+					<th colspan="4">メモ</th>
+				</tr>
+				<tr>
+					<td colspan="4">
+						<textarea name="memo" rows="6" class="form-control" th:text="${todo.memo}" placeholder="メモを入力してください"></textarea>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+
+		<script type="text/javascript" th:src="@{/js/todo.js}"></script>
+
+	</form>
+</body>
+
+</html>
