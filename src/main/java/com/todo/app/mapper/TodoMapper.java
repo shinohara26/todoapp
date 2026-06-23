@@ -15,9 +15,17 @@ public interface TodoMapper {
 
 	public List<Todo> selectComplete();
 	
-	public List<Todo> selectChildList(Integer parent_id);
+	public List<Todo> selectChildList(Long parent_id);
 	
-	Todo selectById(Integer id);
+//	public List<Todo> selectParentInComplete();
+//	
+//	public List<Todo> selectParentComplete();
+//	
+//	public List<Todo> selectChildInComplete();
+//	
+//	public List<Todo> selectChildComplete();
+	
+	Todo selectById(Long id);
 
 	public void add(Todo todo);
 

@@ -7,3 +7,9 @@
 	position:relative;
 	bottom:4px
 }
+
+
+.task-prefix {
+    display: inline-block;
+    width: 20px;
+}

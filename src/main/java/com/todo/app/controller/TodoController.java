@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -39,21 +40,43 @@ public class TodoController {
 		logger.info("アクセス: /");
 		logger.info("ログ出力aaa");
 
-		//		List<Todo> list = todoMapper.selectAll();
+//				List<Todo> list = todoMapper.selectAll();
 
-		List<Todo> list = todoMapper.selectIncomplete();
-		List<Todo> doneList = todoMapper.selectComplete();
+				List<Todo> list = todoMapper.selectIncomplete();
+				List<Todo> doneList = todoMapper.selectComplete();
+
+//		List<Todo> parentTodos = todoMapper.selectParentInComplete();
+//		List<Todo> childTodos = todoMapper.selectChildInComplete();
+//
+//		List<Todo> parentDoneTodos = todoMapper.selectParentComplete();
+//		List<Todo> childDoneTodos = todoMapper.selectChildComplete();
 
 		List<Priority> priorityList = priorityMapper.selectAll();
 		List<Category> categoryList = categoryMapper.selectAll();
 
-		if (false) {
-			logger.debug("list:" + list.size() + "件");
-			logger.debug("doneList:" + doneList.size() + "件");
-		}
+//		Map<Long, List<Todo>> childMap = new HashMap<>();
+//		for (Todo child : childTodos) {
+//			childMap.computeIfAbsent(child.getParent_id(), k -> new ArrayList<>()).add(child);
+//		}
+//		Map<Long, List<Todo>> childDoneMap = new HashMap<>();
+//		for (Todo child : childDoneTodos) {
+//			childDoneMap.computeIfAbsent(child.getParent_id(), k -> new ArrayList<>()).add(child);
+//		}
 
-		model.addAttribute("todos", list);
-		model.addAttribute("doneTodos", doneList);
+				if (false) {
+					logger.debug("list:" + list.size() + "件");
+					logger.debug("doneList:" + doneList.size() + "件");
+				}
+
+				model.addAttribute("todos", list);
+				model.addAttribute("doneTodos", doneList);
+
+//		model.addAttribute("parentTodos", parentTodos);
+//		model.addAttribute("childMap", childMap);
+//
+//		model.addAttribute("parentDoneTodos", parentDoneTodos);
+//		model.addAttribute("childDoneMap", childDoneMap);
+
 		model.addAttribute("priorityList", priorityList);
 		model.addAttribute("categoryList", categoryList);
 
@@ -86,7 +109,7 @@ public class TodoController {
 
 	@RequestMapping(value = "/update")
 	//	@ResponseBody
-	public String update(Todo todo) {
+	public String update(@Validated Todo todo, BindingResult result, Model model) {
 		logger.debug("アクセス: /update");
 		logger.debug("id=" + todo.getId());
 		logger.debug("title=" + todo.getTitle());
@@ -95,14 +118,31 @@ public class TodoController {
 		logger.debug("category=" + todo.getCategory());
 		logger.debug("work_plan_day=" + todo.getWork_plan_day());
 		logger.debug("memo=" + todo.getMemo());
+		
+		if(result.hasErrors()) {
+			List<Priority> priorityList = priorityMapper.selectAll();
+			List<Category> categoryList = categoryMapper.selectAll();
+			
+			model.addAttribute("todo", todo);
+			model.addAttribute("priorityList", priorityList);
+			model.addAttribute("categoryList", categoryList);
+			
+			if(todo.getParent_id() != null) {
+				return "child_detail";
+			}
+			
+			List<Todo> childTodos = todoMapper.selectChildList(todo.getId());
+			model.addAttribute("childTodos", childTodos);
+			return "detail";
+		}
 
 		todoMapper.update(todo);
-		
+
 		if (todo.getParent_id() != null) {
-	        return "redirect:/child/detail?id=" + todo.getId();
-	    }else {
-	    	return "redirect:/detail?id=" + todo.getId();
-	    }
+			return "redirect:/child/detail?id=" + todo.getId();
+		} else {
+			return "redirect:/detail?id=" + todo.getId();
+		}
 	}
 
 	@RequestMapping(value = "/delete")
@@ -114,7 +154,7 @@ public class TodoController {
 	}
 
 	@RequestMapping(value = "/detail")
-	public String detail(Integer id, Model model) {
+	public String detail(Long id, Model model) {
 		logger.info("アクセス: /detail");
 
 		Todo todo = todoMapper.selectById(id);
@@ -130,7 +170,7 @@ public class TodoController {
 	}
 
 	@RequestMapping(value = "/child/detail")
-	public String childDetail(Integer id, Model model) {
+	public String childDetail(Long id, Model model) {
 		logger.info("アクセス: /child/detail");
 
 		Todo todo = todoMapper.selectById(id);

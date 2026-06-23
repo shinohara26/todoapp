@@ -31,13 +31,15 @@
 					<input type="hidden" name="id" th:value="${todo.id}" />
 
 				</td>
-				<td th:text="${todo.title}"></td>
+				<td th:style="${todo.level == 1 ? 'padding-left: 24px;': null}">
+					<span th:text="${todo.level == 1 ? '└ ' + todo.title : todo.title}"></span>
+				</td>
 				<td th:text="${todo.priority_name}"></td>
 				<td th:text="${todo.category_name}"></td>
 				<td th:text="${todo.work_plan_day}"></td>
 				<td>
-					<!--			<button type="button" class="btn btn-outline-secondary btn-sm detail-btn" th:data-id="${todo.id}">詳細</button>-->
-					<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
+					<a th:href="@{${todo.level == 1 ? '/child/detail' : '/detail'}(id=${todo.id})}"
+						class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
 				</td>
 			</tr>
 		</tbody>
@@ -63,30 +65,39 @@
 					<input type="hidden" name="id" th:value="${todo.id}" />
 				</td>
 
-				<td th:text="${todo.title}"></td>
+				<td th:style="${todo.level == 1 ? 'padding-left: 24px;': null}">
+					<span th:text="${todo.level == 1 ? '└ ' + todo.title : todo.title}"></span>
+				</td>
 				<td th:text="${todo.priority_name}"></td>
 				<td th:text="${todo.category_name}"></td>
 				<td th:text="${todo.work_plan_day}"></td>
 				<td>
-					<a th:href="@{/detail(id=${todo.id})}" class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
+					<a th:href="@{${todo.level == 1 ? '/child/detail' : '/detail'}(id=${todo.id})}"
+						class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
 				</td>
 			</tr>
 		</tbody>
 	</table>
 
 
-	<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target="#modal">追加</button>
-	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">追加</button>
+	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addModalLabel">タスクの追加</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
 				<div class="modal-body">
 					<form id="add_form">
 						<div class="form-group">
-							<th>タスク名</th>
+							<label class="font-weight-bold">タスク名 <span class="text-danger">*</label>
 							<input type="text" name="title" class="form-control" placeholder="タスクを入力してください" />
 						</div>
 						<div class="form-group">
-							<th>優先度</th>
+							<label class="font-weight-bold">優先度</label>
 							<select name="priority" class="form-control">
 								<option value="" th:selected="${todo?.priority == null}" disabled hidden>選択してください
 								</option>
@@ -96,7 +107,7 @@
 							</select>
 						</div>
 						<div class="form-group">
-							<th>カテゴリ</th>
+							<label class="font-weight-bold">カテゴリ</label>
 							<select name="category" class="form-control">
 								<option value="" th:selected="${todo?.category == null}" disabled hidden>選択してください
 								</option>
@@ -106,26 +117,21 @@
 							</select>
 						</div>
 						<div class="form-group">
-							<th>作業予定日</th>
+							<label class="font-weight-bold">作業予定日</label>
 							<input type="date" name="work_plan_day" class="form-control" style="width:60%;" />
 						</div>
 						<div class="form-group">
-							<tr>
-								<th colspan="4">メモ</th>
-							</tr>
-							<tr>
-								<td colspan="4">
-									<textarea name="memo" rows="6" class="form-control"></textarea>
-								</td>
-							</tr>
+							<label class="font-weight-bold">メモ</label>
+							<textarea name="memo" rows="4" class="form-control" placeholder="メモを入力してください"></textarea>
 						</div>
-						<button type="button" class="btn btn-secondary float-right" data-dismiss="modal"
-							id="cancelAdd">キャンセル</button>
-						<button type="button" class="btn btn-primary float-right" id="add">保存</button>
-					</form>
 				</div>
+				<button type="button" class="btn btn-secondary float-right" data-dismiss="modal"
+					id="cancelAdd">キャンセル</button>
+				<button type="button" class="btn btn-primary float-right" id="add">保存</button>
+				</form>
 			</div>
 		</div>
+	</div>
 	</div>
 
 	<button type="button" class="btn btn-outline-secondary" id="delete">完了済みを削除</button>
