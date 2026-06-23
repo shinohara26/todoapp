@@ -13,3 +13,89 @@
     display: inline-block;
     width: 20px;
 }
+
+.form-control-custom {
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f1f7ff !important;
+    cursor: pointer;
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.table-hover tbody tr.done-task {
+    opacity: 0.6;
+    text-decoration: line-through;
+}
+
+.child-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #99CCFF;
+}
+
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.table thead th {
+    border-top: none !important;
+    border-bottom: 2px solid #e9ecef !important;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #8b95a5;
+    text-transform: uppercase;
+    letter-spacing: 0.05rem;
+    padding: 12px 16px;
+}
+
+.table td {
+    padding: 18px 16px;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f0f2f5 !important;
+    border-top: none !important;
+}
+
+.table-hover tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8fbff !important;
+}
+
+.table .form-control {
+    border: 1px solid #d1d9e6;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 0.9rem;
+    background-color: #ffffff;
+}
+
+.table .form-control:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.08);
+}
+
+.badge {
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+body {
+    padding-left: 20px;
+    padding-right: 20px;
+	
+	background-color: #fcfcfd;
+}

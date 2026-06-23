@@ -54,7 +54,7 @@
     	i.id
   </select>
 
-  <select id="selectById" resultType="com.todo.app.entity.Todo" parameterType="int">
+  <select id="selectById" resultType="com.todo.app.entity.Todo" parameterType="long">
     select i.*, p.priority_name, c.category_name from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
     	left join category_m_table c on i.category = c.category_id
@@ -62,7 +62,7 @@
     	order by i.id
   </select>
 	
-  <select id="selectChildList" resultType="com.todo.app.entity.Todo" parameterType="int">
+  <select id="selectChildList" resultType="com.todo.app.entity.Todo" parameterType="long">
 	select i.*, p.priority_name, c.category_name from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
     	left join category_m_table c on i.category = c.category_id

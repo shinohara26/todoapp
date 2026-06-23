@@ -30,6 +30,9 @@
 					<input type="checkbox" name="done_flg" />
 					<input type="hidden" name="id" th:value="${todo.id}" />
 
+					<input type="hidden" name="title" th:value="${todo.title}" />
+					<input type="hidden" name="work_plan_day" th:value="${todo.work_plan_day}" />
+
 				</td>
 				<td th:style="${todo.level == 1 ? 'padding-left: 24px;': null}">
 					<span th:text="${todo.level == 1 ? '└ ' + todo.title : todo.title}"></span>
@@ -52,11 +55,13 @@
 	</div>
 	<table class="table table-borderless" style="display:none" id="done_table">
 		<thead>
-			<th style="width: 10rem;"></th>
-			<th style="width: 18rem;"></th>
-			<th style="width: 8rem;"></th>
-			<th style="width: 8rem;"></th>
-			<th style="width: 10rem;"></th>
+			<tr>
+				<th style="width: 10rem;"></th>
+				<th style="width: 18rem;"></th>
+				<th style="width: 8rem;"></th>
+				<th style="width: 8rem;"></th>
+				<th style="width: 10rem;"></th>
+			</tr>
 		</thead>
 		<tbody id="donetodes">
 			<tr class="todo" th:each="todo : ${doneTodos}">
@@ -93,8 +98,9 @@
 				<div class="modal-body">
 					<form id="add_form">
 						<div class="form-group">
-							<label class="font-weight-bold">タスク名 <span class="text-danger">*</label>
+							<label class="font-weight-bold">タスク名 <span class="text-danger">*</span></label>
 							<input type="text" name="title" class="form-control" placeholder="タスクを入力してください" />
+							<div id="addTitleError" class="text-danger mt-1" style="display: none;"></div>
 						</div>
 						<div class="form-group">
 							<label class="font-weight-bold">優先度</label>
@@ -124,14 +130,15 @@
 							<label class="font-weight-bold">メモ</label>
 							<textarea name="memo" rows="4" class="form-control" placeholder="メモを入力してください"></textarea>
 						</div>
+					</form>
 				</div>
-				<button type="button" class="btn btn-secondary float-right" data-dismiss="modal"
-					id="cancelAdd">キャンセル</button>
-				<button type="button" class="btn btn-primary float-right" id="add">保存</button>
-				</form>
+				<div class="text-right">
+					<button type="button" class="btn btn-primary float-right" id="add">保存</button>
+					<button type="button" class="btn btn-secondary float-right" data-dismiss="modal"
+						id="cancelAdd">キャンセル</button>
+				</div>
 			</div>
 		</div>
-	</div>
 	</div>
 
 	<button type="button" class="btn btn-outline-secondary" id="delete">完了済みを削除</button>

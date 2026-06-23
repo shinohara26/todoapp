@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -92,7 +93,11 @@ public class TodoController {
 
 		if (result.hasErrors()) {
 			response.put("success", false);
-			response.put("errors", result.getAllErrors());
+			Map<String, String> errorMap = new HashMap<>();
+	        for (FieldError error : result.getFieldErrors()) {
+	            errorMap.put(error.getField(), error.getDefaultMessage());
+	        }
+			response.put("errors", errorMap);
 			return response;
 		}
 
