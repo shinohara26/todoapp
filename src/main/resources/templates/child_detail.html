@@ -12,18 +12,24 @@
 
 <body>
 	<form id="childDetailForm" th:action="@{/update}" method="post">
+		<!-- チェックボックス保管用 -->
 		<input type="hidden" name="parent_id" th:value="${todo.parent_id}" />
 		<input type="hidden" name="done_flg" id="childDoneFlgValue" th:value="${todo.done_flg}" />
 
+		<!-- タイトル -->
 		<h3>
 			<input type="text" name="title" th:value="${todo.title}" class="form-control d-inline-block"
 				style="width: 20rem;" placeholder="タスクを入力してください">詳細
 		</h3>
 
+		<!-- 操作ボタン -->
 		<div class="d-flex justify-content-end mb-4" style="gap: 8px;">
 			<button type="button" id="childSaveBtn" class="btn btn-primary">保存</button>
-			<button type="button" id="childBackBtn" class="btn btn-secondary" th:data-url="@{/detail(id=${todo.parent_id})}">戻る</button>
+			<!-- 親タスク詳細に戻る -->
+			<button type="button" id="childBackBtn" class="btn btn-secondary"
+				th:data-url="@{/detail(id=${todo.parent_id})}">戻る</button>
 		</div>
+		<!-- 子タスク詳細画面 -->
 		<table class="table table-borderless">
 			<thead>
 				<tr>
@@ -70,7 +76,8 @@
 				</tr>
 				<tr>
 					<td colspan="4">
-						<textarea name="memo" rows="6" class="form-control" th:text="${todo.memo}" placeholder="メモを入力してください"></textarea>
+						<textarea name="memo" rows="6" class="form-control" th:text="${todo.memo}"
+							placeholder="メモを入力してください"></textarea>
 					</td>
 				</tr>
 			</tbody>

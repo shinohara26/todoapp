@@ -14,19 +14,24 @@
 	<form id="detailForm" th:action="@{/update}" method="post">
 		<input type="hidden" name="done_flg" id="doneFlgValue" th:value="${todo.done_flg}" />
 
+		<!-- タイトル -->
 		<h3>
 			<input type="text" name="title" th:value="${todo.title}" class="form-control d-inline-block"
 				style="width: 20rem;" placeholder="タスクを入力してください">詳細
 		</h3>
 
-
+		<!-- 操作ボタン -->
 		<div class="d-flex justify-content-end mb-4" style="gap: 8px;">
+			<!-- 子タスク追加モーダル表示 -->
 			<button type="button" id="childAddBtn" class="btn btn-primary" th:data-parent-id="${todo.id}"
 				data-toggle="modal" data-target="#childAddModal">子タスク追加</button>
+			<!-- 保存 -->
 			<button type="button" id="saveBtn" class="btn btn-primary">保存</button>
+			<!-- 戻る -->
 			<button type="button" id="backBtn" class="btn btn-secondary" th:data-url="@{/}">戻る</button>
 		</div>
 		<table class="table table-borderless">
+			<!-- タスク詳細画面 -->
 			<thead>
 				<tr>
 					<th style="width: 10rem;">完了済み</th>
@@ -39,9 +44,11 @@
 			<tbody>
 				<tr>
 					<td style="width:10rem">
+						<!--チェックボックス -->
 						<input type="checkbox" id="doneFlgCheck" th:checked="${todo.done_flg}" />
 						<input type="hidden" name="id" th:value="${todo.id}" />
 					</td>
+					<!-- 優先度選択 -->
 					<td style="width: 8rem;">
 						<select name="priority" class="form-control">
 							<option value="" th:selected="${todo?.priority == null}" disabled hidden>選択してください
@@ -52,6 +59,7 @@
 							</option>
 						</select>
 					</td>
+					<!-- カテゴリ選択 -->
 					<td style="width: 10rem;">
 						<select name="category" class="form-control">
 							<option value="" th:selected="${todo?.category == null}" disabled hidden>選択してください</option>
@@ -61,11 +69,13 @@
 							</option>
 						</select>
 					</td>
+					<!-- 作業予定日 -->
 					<td style="width: 10rem;">
 						<input type="date" style="border:none" name="work_plan_day" th:value="${todo.work_plan_day}"
 							class="form-control" />
 					</td>
 				</tr>
+				<!-- メモ -->
 				<tr>
 					<th colspan="4">メモ</th>
 				</tr>
@@ -80,6 +90,7 @@
 
 	</form>
 
+	<!-- 子タスク一覧 -->
 	<h4>子タスク一覧</h4>
 	<table class="table table-borderless">
 		<thead>
@@ -99,6 +110,7 @@
 				<td th:text="${child.priority_name}"></td>
 				<td th:text="${child.category_name}"></td>
 				<td th:text="${child.work_plan_day}"></td>
+				<!-- 子タスク詳細へ -->
 				<td>
 					<a th:href="@{/child/detail(id=${child.id})}"
 						class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
@@ -107,6 +119,7 @@
 		</tbody>
 	</table>
 
+	<!-- 子タスク追加モーダル -->
 	<div class="modal fade" id="childAddModal" tabindex="-1" role="dialog" aria-labelledby="childAddModalLabel"
 		aria-hidden="true">
 		<div class="modal-dialog">
@@ -119,6 +132,7 @@
 				</div>
 				<div class="modal-body">
 					<form id="child_add_form">
+						<!-- 親IDを保持(子タスク紐づけ) -->
 						<input type="hidden" name="parent_id" th:value="${todo.id}" />
 
 						<div class="form-group">

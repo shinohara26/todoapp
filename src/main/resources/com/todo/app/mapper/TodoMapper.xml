@@ -3,15 +3,29 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.todo.app.mapper.TodoMapper">
+
+<!-- 
+	全件取得
+	・Todo + 優先度名 + カテゴリ名を取得
+	・LEFT JOINを使用(マスタ未設定でも取得可能) 
+-->
   <select id="selectAll" resultType="com.todo.app.entity.Todo">
     select i.*, p.priority_name, c.category_name from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
     	left join category_m_table c on i.category = c.category_id
     	order by i.id
   </select>
-
-  <select id="selectIncomplete" resultType="com.todo.app.entity.Todo">
+  
+ <!-- 
+  	完了/未完了タスク取得(共通処理)
+  	・done_flgで条件分岐
+  	・levelで親子を判定(0:親 / 1:子)
+  	・ORDER BYで親→子の順に並べる
+ -->
+  <select id="selectByDoneFlg" resultType="com.todo.app.entity.Todo">
     select i.*, p.priority_name, c.category_name,
+    
+    -- 親子判定フラグ(表示制御用)
     case
     	when i.parent_id is null then 0
     	else 1
@@ -19,41 +33,29 @@
     from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
     	left join category_m_table c on i.category = c.category_id
-    	where i.done_flg = false
+    	
+    -- 完了/未完了条件(パラメータ化)
+    	where i.done_flg = #{doneFlg}
+    	
+    -- 親→子の順に表示するための並び替え
     	order by 
     	case
     		when i.parent_id is null then i.id
     		else i.parent_id
-    	end,
+    	end,	-- 親と子を同グループに
+    	
     	case
     		when i.parent_id is null then 0
     		else 1
-    	end,
-    	i.id
+    	end,	-- 親を先に表示
+    	
+    	i.id	-- 最終的な並び順
   </select>
 
-  <select id="selectComplete" resultType="com.todo.app.entity.Todo">
-    select i.*, p.priority_name, c.category_name,
-    case
-    	when i.parent_id is null then 0
-    	else 1
-    end as level
-    from items_table i
-    	left join priority_m_table p on i.priority = p.priority_id
-    	left join category_m_table c on i.category = c.category_id
-    	where i.done_flg = true
-    	order by
-    	case
-    		when i.parent_id is null then i.id
-    		else i.parent_id
-    	end,
-    	case
-    		when i.parent_id is null then 0
-    		else 1
-    	 end,
-    	i.id
-  </select>
-
+<!-- 
+	ID指定でタスク取得
+	・詳細画面表示用
+-->
   <select id="selectById" resultType="com.todo.app.entity.Todo" parameterType="long">
     select i.*, p.priority_name, c.category_name from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
@@ -61,7 +63,11 @@
     	where i.id = #{id}
     	order by i.id
   </select>
-	
+
+<!-- 
+	子タスク一覧取得 
+	・parent_idをキーに検索
+-->
   <select id="selectChildList" resultType="com.todo.app.entity.Todo" parameterType="long">
 	select i.*, p.priority_name, c.category_name from items_table i
     	left join priority_m_table p on i.priority = p.priority_id
@@ -69,39 +75,12 @@
     	where i.parent_id = #{parent_id}
     	order by i.id 
   </select>
-  
-<!--  <select id="selectParentInComplete" resultType="com.todo.app.entity.Todo">-->
-<!--  	select i.*, p.priority_name, c.category_name from items_table i-->
-<!--  		left join priority_m_table p on i.priority = p.priority_id-->
-<!--  		left join category_m_table c on i.category = c.category_id-->
-<!--  		where i.done_flg = "false" and i.parent_id is null-->
-<!--  		order by i.id-->
-<!--  </select>-->
-  
-<!--  <select id="selectChildInComplete" resultType="com.todo.app.entity.Todo">-->
-<!--  	select i.*, p.priority_name, c.category_name from items_table i-->
-<!--  		left join priority_m_table p on i.priority = p.priority_id-->
-<!--  		left join categroy_m_table c on i.category = c.categroy_id-->
-<!--  		where i.done_flg = "false" and i.parent_id is not null-->
-<!--  		order by i.id-->
-<!--  </select>-->
-  
-<!--  <select id="selectParentComplete" resultType="com.todo.app.entity.Todo">-->
-<!--  	select i.*, p.priority_name, c.category_name from items_table i-->
-<!--  		left join priority_m_table p on i.priority = p.priority_id-->
-<!--  		left join category_m_table c on i.category = c.category_id-->
-<!--  		where i.done_flg = "true" and i.parent_id is null-->
-<!--  		order by i.id-->
-<!--  </select>-->
-  
-<!--  <select id="selectChildComplete" resultType="com.todo.app.entity.Todo">-->
-<!--  	select i.*, p.priority_name, c.category_name from items_table i-->
-<!--  		left join priority_m_table p on i.priority = p.priority_id-->
-<!--  		left join category_m_table c on i.category = c.category_id-->
-<!--  		where i.done_flg = "true" and i.parent_id is not null-->
-<!--  		order by i.parent_id, i.id-->
-<!--  </select>-->
 
+<!-- 
+	タスク追加
+	・useGeneratedKeysでID自動取得
+	・日付はString → DATE型に変換 
+-->
   <insert id="add"  useGeneratedKeys="true" keyProperty="id" parameterType="com.todo.app.entity.Todo">
     insert into items_table (title, work_plan_day, priority, 
     	category, parent_id, memo)
@@ -109,6 +88,11 @@
     	#{category}, #{parent_id}, #{memo})
   </insert>
 
+<!-- 
+	タスク更新
+	・IDをキーに更新
+	・チェックボックスの状態も反映
+-->
   <update id="update" parameterType="com.todo.app.entity.Todo">
     update items_table set
       title = #{title},
@@ -120,6 +104,10 @@
       where id = #{id}
   </update>
 
+<!-- 
+	完了済みタスク削除
+	・done_flg=trueのデータのみ削除 
+-->
   <delete id="delete" parameterType="com.todo.app.entity.Todo">
     delete from items_table where done_flg = true
   </delete>

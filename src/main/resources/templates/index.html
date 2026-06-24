@@ -14,6 +14,7 @@
 	<h1>TodoList</h1>
 	<h3>マイタスク</h3>
 	<table class="table table-borderless">
+		<!-- 未完了タスク一覧 -->
 		<thead>
 			<tr>
 				<th style="width: 10rem;">完了済み</th>
@@ -28,6 +29,7 @@
 
 				<td style="width:2rem">
 					<input type="checkbox" name="done_flg" />
+					<!-- hiddenで必要な値を保持 -->
 					<input type="hidden" name="id" th:value="${todo.id}" />
 
 					<input type="hidden" name="title" th:value="${todo.title}" />
@@ -40,6 +42,7 @@
 				<td th:text="${todo.priority_name}"></td>
 				<td th:text="${todo.category_name}"></td>
 				<td th:text="${todo.work_plan_day}"></td>
+				<!-- 親/子で遷移先を分岐 -->
 				<td>
 					<a th:href="@{${todo.level == 1 ? '/child/detail' : '/detail'}(id=${todo.id})}"
 						class="btn btn-outline-secondary btn-sm detail-btn">詳細</a>
@@ -51,8 +54,11 @@
 	<div style="font-size:20px">
 		<span id="done_count"></span>
 		<span class="pr-3">件完了</span>
+		<!-- 表示切替ボタン -->
 		<span class="button_for_show " style="display:inline-block"></span>
 	</div>
+	
+	<!-- 完了タスク一覧 -->
 	<table class="table table-borderless" style="display:none" id="done_table">
 		<thead>
 			<tr>
@@ -86,6 +92,7 @@
 
 
 	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal">追加</button>
+	<!-- モーダル本体 -->
 	<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -97,11 +104,13 @@
 				</div>
 				<div class="modal-body">
 					<form id="add_form">
+						<!-- タスク名(必須) -->
 						<div class="form-group">
 							<label class="font-weight-bold">タスク名 <span class="text-danger">*</span></label>
 							<input type="text" name="title" class="form-control" placeholder="タスクを入力してください" />
 							<div id="addTitleError" class="text-danger mt-1" style="display: none;"></div>
 						</div>
+						<!-- 優先度 -->
 						<div class="form-group">
 							<label class="font-weight-bold">優先度</label>
 							<select name="priority" class="form-control">
@@ -112,6 +121,7 @@
 								</option>
 							</select>
 						</div>
+						<!-- カテゴリ -->
 						<div class="form-group">
 							<label class="font-weight-bold">カテゴリ</label>
 							<select name="category" class="form-control">
@@ -122,10 +132,12 @@
 								</option>
 							</select>
 						</div>
+						<!-- 作業予定日 -->
 						<div class="form-group">
 							<label class="font-weight-bold">作業予定日</label>
 							<input type="date" name="work_plan_day" class="form-control" style="width:60%;" />
 						</div>
+						<!-- メモ -->
 						<div class="form-group">
 							<label class="font-weight-bold">メモ</label>
 							<textarea name="memo" rows="4" class="form-control" placeholder="メモを入力してください"></textarea>
@@ -141,8 +153,10 @@
 		</div>
 	</div>
 
+	<!-- 完了タスク削除 -->
 	<button type="button" class="btn btn-outline-secondary" id="delete">完了済みを削除</button>
 
+	<!-- js読み込み -->
 	<script type="text/javascript" th:src="@{/js/todo.js}"></script>
 </body>
 

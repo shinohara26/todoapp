@@ -4,6 +4,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.todo.app.mapper.PriorityMapper">
 
+<!-- 
+	優先度一覧取得
+	・優先度マスタから全件取得 
+	・ID順に並べる
+-->
 	<select id="selectAll" resultType="com.todo.app.entity.Priority">
 		select * from priority_m_table order by priority_id
 	</select>

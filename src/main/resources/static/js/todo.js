@@ -1,5 +1,10 @@
 /**
- *
+ * Todoアプリのフロント処理
+ * 
+ * ・チェック変更時の更新(Ajax)
+ * ・タスク追加(モーダル + Ajax)
+ * 完了タスクの表示制御
+ * DOM操作による即時UI反映
  */
 $(function() {
 
@@ -161,13 +166,6 @@ $(function() {
                 });
         });
     })
-
-    //詳細画面へ
-
-    //    $(".detail-btn").on("click", function() {
-    //        const id = $(this).data("id");
-    //        location.href = "/detail?id=" + id;
-    //    });
 
     // 保存ボタン
     $("#saveBtn").on("click", function() {
