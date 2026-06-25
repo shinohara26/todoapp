@@ -19,6 +19,8 @@
 			<input type="text" name="title" th:value="${todo.title}" class="form-control d-inline-block"
 				style="width: 20rem;" placeholder="タスクを入力してください">詳細
 		</h3>
+		<!-- エラー表示 -->
+		<div class="text-danger mt-1" th:if="${titleError}" th:text="${titleError}"></div>
 
 		<!-- 操作ボタン -->
 		<div class="d-flex justify-content-end mb-4" style="gap: 8px;">

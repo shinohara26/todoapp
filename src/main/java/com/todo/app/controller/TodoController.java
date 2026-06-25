@@ -38,19 +38,19 @@ import com.todo.app.mapper.TodoMapper;
 public class TodoController {
 	/**	ログ出力用 */
 	private static final Logger logger = LoggerFactory.getLogger(TodoController.class);
-	
+
 	/** Todoデータアクセス */
 	@Autowired
 	TodoMapper todoMapper;
-	
+
 	/** 優先度マスタ */
 	@Autowired
 	PriorityMapper priorityMapper;
-	
+
 	/** カテゴリマスタ */
 	@Autowired
 	CategoryMapper categoryMapper;
-	
+
 	/**
 	 * トップ画面表示
 	 * 未完了・完了タスクを取得し一覧表示する
@@ -68,7 +68,7 @@ public class TodoController {
 		List<Todo> list = todoMapper.selectByDoneFlg(false);
 		// 完了タスク取得
 		List<Todo> doneList = todoMapper.selectByDoneFlg(true);
-		
+
 		// マスタデータ取得
 		List<Priority> priorityList = priorityMapper.selectAll();
 		List<Category> categoryList = categoryMapper.selectAll();
@@ -88,7 +88,7 @@ public class TodoController {
 
 		return "index";
 	}
-	
+
 	/**
 	 * タスク追加処理(Ajax)
 	 * 
@@ -108,7 +108,7 @@ public class TodoController {
 		// バリデーションエラーがある場合
 		if (result.hasErrors()) {
 			response.put("success", false);
-			
+
 			//フィールドごとのエラーメッセージをまとめる
 			Map<String, String> errorMap = new HashMap<>();
 			for (FieldError error : result.getFieldErrors()) {
@@ -143,7 +143,7 @@ public class TodoController {
 	 */
 	@RequestMapping(value = "/update")
 	public String update(@Validated Todo todo, BindingResult result, Model model) {
-		
+
 		// ログ(デバッグ用)
 		logger.debug("アクセス: /update");
 		logger.debug("id=" + todo.getId());
@@ -162,6 +162,13 @@ public class TodoController {
 			model.addAttribute("todo", todo);
 			model.addAttribute("priorityList", priorityList);
 			model.addAttribute("categoryList", categoryList);
+
+			// タスクエラーを取り出して渡す
+			for (FieldError error : result.getFieldErrors()) {
+				if ("title".equals(error.getField())) {
+					model.addAttribute("titleError", error.getDefaultMessage());
+				}
+			}
 
 			// 子タスクの場合
 			if (todo.getParent_id() != null) {
@@ -211,11 +218,11 @@ public class TodoController {
 
 		// タスク取得
 		Todo todo = todoMapper.selectById(id);
-		
+
 		// マスクデータ取得
 		List<Priority> priorityList = priorityMapper.selectAll();
 		List<Category> categoryList = categoryMapper.selectAll();
-		
+
 		// 子タスク取得
 		List<Todo> childTodos = todoMapper.selectChildList(id);
 
@@ -225,7 +232,7 @@ public class TodoController {
 		model.addAttribute("childTodos", childTodos);
 		return "detail";
 	}
-	
+
 	/**
 	 * 子タスクの詳細画面表示
 	 * 
